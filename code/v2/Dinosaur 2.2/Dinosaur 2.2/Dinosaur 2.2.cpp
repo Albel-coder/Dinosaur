@@ -1,8 +1,6 @@
 ﻿#include <iostream>
 #include <thread>
 #include <conio.h>
-//#include <string>
-//#include <sstream>
 #include "Console.h"
 
 COORD cPos;
@@ -20,9 +18,7 @@ uint8_t Y = 10;
 bool Jump = false;
 bool GameOver = false;
 
-uint8_t Obstacles[6] = { 0 };
-
-static void DrawMapBorders(uint8_t ConsoleWidth, uint8_t ConsoleHeight, uint8_t X, uint8_t Y, uint8_t TopLeftCoord, uint8_t TopUpCoord, uint8_t RightBorderColor, uint8_t LeftBorderColor, uint8_t UpBorderColor, uint8_t DownBorderColor)
+static void DrawMapBorders(uint8_t ConsoleWidth, uint8_t ConsoleHeight, uint8_t X, uint8_t Y, uint8_t TopLeftCoord = 0, uint8_t TopUpCoord = 0, uint8_t RightBorderColor = 15, uint8_t LeftBorderColor = 15, uint8_t UpBorderColor = 15, uint8_t DownBorderColor = 15)
 {    
     if (X > ConsoleWidth - TopLeftCoord - 2) X = ConsoleWidth - TopLeftCoord - 1;
     else
@@ -147,8 +143,16 @@ void DrawGameAttributes()
 
     //// CLEAR
 
-    if (Value > X - 3)
+    if (Value > X - 5)
     {
+        cPos.Y = 10;
+        SetConsoleCursorPosition(hConsole, cPos);
+        for (int i = 4; i > 0; i--)
+        {
+            std::cout << " ";
+            cPos.Y--;
+            SetConsoleCursorPosition(hConsole, cPos);
+        }
         Value = 0;
     }
 
@@ -158,12 +162,10 @@ void DrawGameAttributes()
 
 int main()
 {    
-    //auto Start = std::chrono::high_resolution_clock::now();
-
     console.ConsoleCursorVisible(false, 100);
     srand(time(NULL));
 
-    DrawMapBorders(console.GetConsoleWidth(), console.GetConsoleWidth(), X, Y, 0, 0, 15, 15, 15, 15);
+    DrawMapBorders(console.GetConsoleWidth(), console.GetConsoleWidth(), X, Y);
 
     while (!GameOver)
     {
@@ -171,14 +173,11 @@ int main()
         JumpingAbility();
         DrawGameAttributes();
     }
-    //auto End = std::chrono::high_resolution_clock::now();
-    //std::chrono::duration<float> duration = End - Start;
     cPos.X = 35; cPos.Y = 5;
     SetConsoleCursorPosition(hConsole, cPos);
     SetConsoleTextAttribute(hConsole, 1);
     cout << "GAME OVER!";
 
     cin >> Points;
-    //std::cout << duration.count();
     return 0;
 }
